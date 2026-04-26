@@ -93,27 +93,27 @@ with st.sidebar:
             options=databases,
             index=0
         )
-        current_db_path = os.path.join("Database", selected_db_file)
+
+        temp_db_path = os.path.join("Database", selected_db_file)
+
+        if "active_db" not in st.session_state:
+            st.session_state.active_db = temp_db_path
+
+        if st.session_state.active_db != temp_db_path:
+            st.session_state.active_db = temp_db_path
+            st.session_state.messages = []
+            st.session_state.store = {}
+            st.cache_resource.clear()
+            st.rerun()
     else:
-        st.error("Lütfen 'Database' klasörüne bir veritabanı dosyası ekleyin.")
+        st.error("Lütfen 'Database' klasörüne bir .sqlite dosyası ekleyin.")
         st.stop()
 
-    if "active_db" not in st.session_state:
-        st.session_state.active_db = current_db_path
+agent_executor, db_engine = init_agent(st.session_state.active_db)
 
-    if st.session_state.active_db != current_db_path:
-        st.session_state.active_db = current_db_path
-        st.session_state.messages = []  # new db for clean chat
-        st.session_state.store = {}  # new db for clean memory
-        st.cache_resource.clear()  # rerun agent
-        st.rerun()
-
-    # Start Agent
-    agent_executor, db_engine = init_agent(current_db_path)
-
+with st.sidebar:
     st.subheader("📊 Sistem Durumu")
-    st.success(f"Aktif: `{selected_db_file}`")
-
+    st.success(f"Aktif: `{os.path.basename(st.session_state.active_db)}`")
     st.subheader("🗂️ Tablo Listesi")
     try:
         tables = db_engine.get_usable_table_names()
