@@ -8,34 +8,33 @@ from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from dotenv import load_dotenv
 
-# --- INITIAL SETUP ---
-load_dotenv()
-st.set_page_config(page_title="AgenticSQL", layout="wide", page_icon="🤖")
 
-# --- CUSTOM CSS (High Contrast Design) ---
+load_dotenv()
+
+st.set_page_config(page_title="AgenticSQL", layout="wide", page_icon="🤖")
 st.markdown("""
     <style>
-    /* Ana Uygulama Arka Planı */
+    /* Main Application Background Themes*/
     .stApp { background-color: #0d1117; }
 
-    /* SOL MENÜ (BEYAZ TASARIM) */
+    /* Slider Bar (white themes) */
     [data-testid="stSidebar"] {
         background-color: #FFFFFF !important;
         border-right: 1px solid #e6e8eb;
     }
-    /* Sidebar Metin Renkleri */
+    /* Sidebar Text Color */
     [data-testid="stSidebar"] .stMarkdown p, 
     [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3,
     [data-testid="stSidebar"] span, [data-testid="stSidebar"] label {
         color: #1f2328 !important;
     }
-    /* Sidebar Selectbox & Input Ayarı */
+    /* Sidebar Selectbox & Input Area */
     [data-testid="stSidebar"] div[data-baseweb="select"] > div {
         background-color: #f6f8fa !important;
         color: #1f2328 !important;
     }
 
-    /* CHAT ALANI (KOYU MOD) */
+    /* CHAT Area (dark themes) */
     [data-testid="stChatMessage"] {
         background-color: #161b22 !important;
         border: 1px solid #30363d !important;
@@ -48,9 +47,8 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 
-# --- HELPER FUNCTIONS ---
+# All DB List
 def get_available_databases():
-    """Database klasöründeki sqlite dosyalarını listeler."""
     if not os.path.exists("Database"):
         os.makedirs("Database")
     files = glob.glob("Database/*.sqlite") + glob.glob("Database/*.db")
@@ -59,7 +57,6 @@ def get_available_databases():
 
 @st.cache_resource
 def init_agent(db_path):
-    """Veritabanına göre ajanı başlatır ve cache'ler."""
     if not os.path.exists(db_path):
         return None, None
 
@@ -83,7 +80,7 @@ def init_agent(db_path):
     return agent_executor, db_engine
 
 
-# --- SIDEBAR: DYNAMIC SELECTION ---
+# Sidebar dynamic select
 with st.sidebar:
     st.title("📟 AgenticSQL")
     st.markdown("---")
@@ -98,21 +95,20 @@ with st.sidebar:
         )
         current_db_path = os.path.join("Database", selected_db_file)
     else:
-        st.error("Lütfen 'Database' klasörüne bir .sqlite dosyası ekleyin.")
+        st.error("Lütfen 'Database' klasörüne bir veritabanı dosyası ekleyin.")
         st.stop()
 
-    # DB Değişimi Kontrolü
     if "active_db" not in st.session_state:
         st.session_state.active_db = current_db_path
 
     if st.session_state.active_db != current_db_path:
         st.session_state.active_db = current_db_path
-        st.session_state.messages = []  # Yeni DB için sohbeti temizle
-        st.session_state.store = {}  # Memory'yi temizle
-        st.cache_resource.clear()  # Ajanı yeniden kurmaya zorla
+        st.session_state.messages = []  # new db for clean chat
+        st.session_state.store = {}  # new db for clean memory
+        st.cache_resource.clear()  # rerun agent
         st.rerun()
 
-    # Ajanı Başlat
+    # Start Agent
     agent_executor, db_engine = init_agent(current_db_path)
 
     st.subheader("📊 Sistem Durumu")
@@ -132,7 +128,6 @@ with st.sidebar:
         st.session_state.store = {}
         st.rerun()
 
-# --- CHAT LOGIC ---
 if "store" not in st.session_state:
     st.session_state.store = {}
 
@@ -154,11 +149,11 @@ agent_with_chat_history = RunnableWithMessageHistory(
     history_messages_key="chat_history",
 )
 
-# --- MAIN UI ---
+# Main UI
 st.title("🤖 SQL Agent: Enterprise Data Interface")
 st.caption(f"Su anda `{selected_db_file}` üzerinde çalışıyorsunuz.")
 
-# Mesaj Geçmişini Yazdır
+# Write Chat History
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
@@ -172,7 +167,6 @@ if prompt := st.chat_input("Veritabanına bir soru sor..."):
     with st.chat_message("assistant"):
         with st.spinner("Veri ambarı taranıyor..."):
             try:
-                # Session ID'yi dinamik olarak DB ismine bağlayalım
                 session_id = f"session_{selected_db_file}"
                 config = {"configurable": {"session_id": session_id}}
 
@@ -185,6 +179,6 @@ if prompt := st.chat_input("Veritabanına bir soru sor..."):
             except Exception as e:
                 st.error(f"Analiz sırasında bir sorun çıktı: {str(e)}")
 
-# --- FOOTER ---
+
 st.markdown("---")
-st.caption("© 2026 AgenticSQL - Software Architect Edition")
+st.caption("© 2026 AgenticSQL")
