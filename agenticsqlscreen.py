@@ -9,18 +9,48 @@ from dotenv import load_dotenv
 
 # --- CONFIG & SETUP ---
 load_dotenv()
-st.set_page_config(page_title="SchemaPilot OS", layout="wide", page_icon="🤖")
+st.set_page_config(page_title="AgenticSQL", layout="wide", page_icon="🤖")
 
 # Custom CSS: Terminal Estetiği
 st.markdown("""
     <style>
-    .main { background-color: #0d1117; color: #c9d1d9; }
-    .stChatFloatingInputContainer { background-color: #0d1117; }
-    .stChatMessage { border: 1px solid #30363d; border-radius: 8px; background-color: #161b22; }
-    code { color: #58a6ff !important; }
-    .st-emotion-cache-1c7n2ka { background-color: #0d1117; } /* Sidebar background */
+    /* Ana arka plan koyu kalsın (Odaklanma için) */
+    .stApp {
+        background-color: #0d1117;
+    }
+
+    /* SOL MENÜ (Sidebar) BEYAZ TASARIM */
+    [data-testid="stSidebar"] {
+        background-color: #FFFFFF !important; /* Arka plan bembeyaz */
+        border-right: 1px solid #e6e8eb;
+    }
+
+    /* Sol menü içindeki yazıları koyu yap (Okunabilirlik için) */
+    [data-testid="stSidebar"] .stMarkdown p, 
+    [data-testid="stSidebar"] h1, 
+    [data-testid="stSidebar"] h2, 
+    [data-testid="stSidebar"] h3,
+    [data-testid="stSidebar"] span {
+        color: #1f2328 !important;
+    }
+
+    /* Sol menüdeki ikonlar ve buton metinleri */
+    [data-testid="stSidebar"] .stButton button {
+        color: #1f2328 !important;
+        border: 1px solid #d0d7de;
+    }
+
+    /* Chat mesaj kutuları (Koyu modda devam) */
+    [data-testid="stChatMessage"] {
+        background-color: #1d222b !important;
+        border: 1px solid #30363d !important;
+    }
+
+    .stMarkdown p {
+        color: #e6edf3 !important;
+    }
     </style>
-    """, unsafe_allow_stdio=True)
+    """, unsafe_allow_html=True)
 
 # --- BACKEND INITIALIZATION ---
 DB_PATH = "Database/Chinook_Sqlite.sqlite"
@@ -78,7 +108,7 @@ agent_with_chat_history = RunnableWithMessageHistory(
 
 # --- UI LAYOUT ---
 with st.sidebar:
-    st.title("📟 SchemaPilot v1.0")
+    st.title("📟 AgenticSQL")
     st.markdown("---")
     st.subheader("📊 Sistem Durumu")
     st.success("Veritabanı: Aktif")
@@ -100,7 +130,7 @@ with st.sidebar:
 
 # Ana Ekran
 st.title("🤖 SQL Agent: Enterprise Data Interface")
-st.caption("Doğal dilden SQL'e mimari köprü. Software Architect Edition.")
+st.caption("Doğal dilden SQL'e mimari köprü")
 
 # Mesajları Görüntüle
 for msg in st.session_state.messages:
