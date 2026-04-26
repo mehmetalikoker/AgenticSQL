@@ -2,7 +2,7 @@ import pytest
 import os
 from unittest.mock import MagicMock, patch
 from langchain_community.utilities import SQLDatabase
-from agenticsqlscreen import init_agent  # app.py dosyanızın adı farklıysa güncelleyin
+from agenticsql import init_agent  # app.py dosyanızın adı farklıysa güncelleyin
 
 # --- CONFIG & CONSTANTS ---
 TEST_DB_PATH = "Database/Chinook_Sqlite.sqlite"
