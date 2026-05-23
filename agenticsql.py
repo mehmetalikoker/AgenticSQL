@@ -5,10 +5,10 @@ import streamlit as st
 from dotenv import load_dotenv
 from langchain_core.runnables.history import RunnableWithMessageHistory
 
-from agent_manager import AgentManager
-from database_manager import DatabaseManager
-from session_manager import SessionManager
-from ui_manager import UIManager
+from managers.agent_manager import AgentManager
+from managers.database_manager import DatabaseManager
+from managers.session_manager import SessionManager
+from managers.ui_manager import UIManager
 
 load_dotenv()
 

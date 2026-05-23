@@ -4,14 +4,13 @@ from typing import Any, Optional, Tuple
 import streamlit as st
 from langchain_community.agent_toolkits import create_sql_agent
 from langchain_community.utilities import SQLDatabase
-from langchain_openai import ChatOpenAI
+from langchain_anthropic import ChatAnthropic
 
 
 class AgentManager:
     PAGE_TITLE = "AgenticSQL"
     PAGE_ICON = "🤖"
-    MODEL_NAME = "gpt-4o"
-    DEFAULT_TEMPERATURE = 0
+    MODEL_NAME = "claude-sonnet-4-6"
     CUSTOM_AGENT_SUFFIX = """
 Her zaman sorgu yazmadan önce veritabanı şemasını dikkatlice incele.
 Eğer soruyla ilgili yeterli bilgi yoksa, varsayımda bulunma, kullanıcıya sor.
@@ -61,15 +60,12 @@ Sonuçları her zaman kullanıcı dostu bir Türkçe ile açıkla.
             return None, None
 
         db_engine = SQLDatabase.from_uri(f"sqlite:///{db_path}")
-        llm = ChatOpenAI(
-            model=AgentManager.MODEL_NAME,
-            temperature=AgentManager.DEFAULT_TEMPERATURE,
-        )
+        llm = ChatAnthropic(model=AgentManager.MODEL_NAME)
 
         agent_executor = create_sql_agent(
             llm,
             db=db_engine,
-            agent_type="openai-tools",
+            agent_type="tool-calling",
             verbose=True,
             suffix=AgentManager.CUSTOM_AGENT_SUFFIX,
         )

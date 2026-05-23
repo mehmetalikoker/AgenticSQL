@@ -5,8 +5,8 @@ import streamlit as st
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_community.utilities import SQLDatabase
 
-from database_manager import DatabaseManager
-from session_manager import SessionManager
+from managers.database_manager import DatabaseManager
+from managers.session_manager import SessionManager
 
 
 class UIManager:
