@@ -44,13 +44,7 @@ def main() -> None:
 
     UIManager.render_chat_interface(agent_with_chat_history, active_db_path)
     st.markdown("---")
-
-    col1, col2 = st.columns([6, 1])
-    with col1:
-        st.caption("🌿 © 2026 AgenticSQL — Yapay Zeka Destekli SQL Arayüzü")
-    with col2:
-        if st.button("Çıkış Yap", type="secondary"):
-            LoginManager.logout()
+    st.caption("🌿 © 2026 AgenticSQL — Yapay Zeka Destekli SQL Arayüzü")
 
 
 get_available_databases = DatabaseManager.get_available_databases

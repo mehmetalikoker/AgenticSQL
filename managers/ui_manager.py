@@ -66,8 +66,9 @@ class UIManager:
                     st.caption("Tablolar okunurken hata oluştu.")
 
             st.markdown("---")
-            if st.button("🔄 Sohbeti Sıfırla", use_container_width=True):
-                SessionManager.reset_chat()
+            if st.button("🚪 Çıkış Yap", use_container_width=True):
+                from managers.login_manager import LoginManager
+                LoginManager.logout()
 
         return selected_model
 
