@@ -36,11 +36,14 @@ class UIManager:
     def render_status_panel(db_path: str, db_engine: Optional[SQLDatabase]) -> None:
         with st.sidebar:
             st.markdown("#### 📊 Sistem Durumu")
-            st.success(f"Bağlı: `{os.path.basename(db_path)}`")
+            if db_engine is not None:
+                st.success("Aktif")
+            else:
+                st.error("Pasif")
             st.markdown("#### 🗂️ Tablolar")
 
             if db_engine is None:
-                st.caption("Veritabanı bağlanamadı.")
+                st.caption("Bağlantı yok.")
             else:
                 try:
                     tables = db_engine.get_usable_table_names()
