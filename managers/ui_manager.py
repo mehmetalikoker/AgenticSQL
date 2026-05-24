@@ -135,19 +135,6 @@ class UIManager:
                 st.session_state.selected_model = selected_model
                 SessionManager.reset_chat()
 
-            st.markdown("#### 🗂️ Tablolar")
-            if db_engine is None:
-                st.caption("Bağlantı yok.")
-            else:
-                try:
-                    tables = db_engine.get_usable_table_names()
-                    for table in tables:
-                        st.markdown(
-                            f"<span style='color:#15803d; font-family:monospace; font-weight:500;'>▸ {table}</span>",
-                            unsafe_allow_html=True,
-                        )
-                except Exception:
-                    st.caption("Tablolar okunurken hata oluştu.")
 
             st.markdown("---")
             if st.button("🚪 Çıkış Yap", use_container_width=True):
