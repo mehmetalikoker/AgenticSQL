@@ -28,26 +28,99 @@ Sonuçları her zaman kullanıcı dostu bir Türkçe ile açıkla.
         st.markdown(
             """
             <style>
-            .stApp { background-color: #0d1117; }
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+            html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
+
+            /* Ana alan - beyaz tema */
+            .stApp {
+                background-color: #f8fafc;
+            }
+
+            /* Sol sidebar - beyaz, okunur */
             [data-testid="stSidebar"] {
-                background-color: #FFFFFF !important;
-                border-right: 1px solid #e6e8eb;
+                background-color: #ffffff !important;
+                border-right: 2px solid #16a34a !important;
+                box-shadow: 2px 0 8px rgba(0,0,0,0.06);
             }
             [data-testid="stSidebar"] .stMarkdown p,
-            [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3,
-            [data-testid="stSidebar"] span, [data-testid="stSidebar"] label {
-                color: #1f2328 !important;
+            [data-testid="stSidebar"] span,
+            [data-testid="stSidebar"] label {
+                color: #1e293b !important;
+                font-size: 0.9rem;
+            }
+            [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
+                color: #15803d !important;
             }
             [data-testid="stSidebar"] div[data-baseweb="select"] > div {
-                background-color: #f6f8fa !important;
-                color: #1f2328 !important;
+                background-color: #f0fdf4 !important;
+                border: 1px solid #86efac !important;
+                color: #1e293b !important;
             }
+            [data-testid="stSidebar"] hr {
+                border-color: #dcfce7 !important;
+            }
+
+            /* Sidebar butonları */
+            [data-testid="stSidebar"] .stButton > button {
+                background-color: #16a34a !important;
+                color: #ffffff !important;
+                border: none !important;
+                border-radius: 8px !important;
+                font-weight: 500 !important;
+                transition: background 0.2s ease;
+            }
+            [data-testid="stSidebar"] .stButton > button:hover {
+                background-color: #15803d !important;
+            }
+
+            /* Ana alan - sağ içerik */
+            .main .block-container {
+                background-color: #ffffff;
+                border-radius: 12px;
+                padding: 2rem 2.5rem;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            }
+
+            /* Başlıklar */
+            h1 { color: #15803d !important; }
+            h2, h3 { color: #1e293b !important; }
+            .stCaption { color: #64748b !important; }
+
+            /* Chat mesajları */
             [data-testid="stChatMessage"] {
-                background-color: #161b22 !important;
-                border: 1px solid #30363d !important;
+                background-color: #f0fdf4 !important;
+                border: 1px solid #bbf7d0 !important;
+                border-radius: 10px !important;
+                margin-bottom: 8px !important;
             }
-            .stMarkdown p { color: #e6edf3 !important; }
-            hr { border-color: #30363d !important; }
+
+            /* Chat input */
+            [data-testid="stChatInput"] textarea {
+                background-color: #ffffff !important;
+                border: 1.5px solid #16a34a !important;
+                color: #1e293b !important;
+                border-radius: 10px !important;
+            }
+            [data-testid="stChatInput"] textarea::placeholder { color: #94a3b8 !important; }
+
+            /* Metin */
+            .stMarkdown p { color: #334155 !important; }
+
+            /* Alert */
+            [data-testid="stAlert"] { border-radius: 8px !important; }
+
+            /* Divider */
+            hr { border-color: #e2e8f0 !important; }
+
+            /* Spinner */
+            .stSpinner > div { border-top-color: #16a34a !important; }
+
+            /* Scrollbar */
+            ::-webkit-scrollbar { width: 6px; }
+            ::-webkit-scrollbar-track { background: #f1f5f9; }
+            ::-webkit-scrollbar-thumb { background: #86efac; border-radius: 3px; }
+            ::-webkit-scrollbar-thumb:hover { background: #16a34a; }
             </style>
             """,
             unsafe_allow_html=True,

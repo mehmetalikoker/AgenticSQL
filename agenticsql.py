@@ -36,7 +36,7 @@ def main() -> None:
 
     UIManager.render_chat_interface(agent_with_chat_history, active_db_path)
     st.markdown("---")
-    st.caption("© 2026 AgenticSQL")
+    st.caption("🌿 © 2026 AgenticSQL — Yapay Zeka Destekli SQL Arayüzü")
 
 
 get_available_databases = DatabaseManager.get_available_databases

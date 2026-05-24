@@ -13,7 +13,10 @@ class UIManager:
     @staticmethod
     def render_sidebar(databases: List[str]) -> Optional[str]:
         with st.sidebar:
-            st.title("📟 AgenticSQL")
+            st.markdown(
+                "<h1 style='color:#15803d; letter-spacing:1px; font-size:1.6rem;'>🌿 AgenticSQL</h1>",
+                unsafe_allow_html=True,
+            )
             st.markdown("---")
 
             if not databases:
@@ -32,9 +35,9 @@ class UIManager:
     @staticmethod
     def render_status_panel(db_path: str, db_engine: Optional[SQLDatabase]) -> None:
         with st.sidebar:
-            st.subheader("📊 Sistem Durumu")
-            st.success(f"Aktif: `{os.path.basename(db_path)}`")
-            st.subheader("🗂️ Tablo Listesi")
+            st.markdown("#### 📊 Sistem Durumu")
+            st.success(f"Bağlı: `{os.path.basename(db_path)}`")
+            st.markdown("#### 🗂️ Tablolar")
 
             if db_engine is None:
                 st.caption("Veritabanı bağlanamadı.")
@@ -42,18 +45,24 @@ class UIManager:
                 try:
                     tables = db_engine.get_usable_table_names()
                     for table in tables:
-                        st.markdown(f"- `{table}`")
+                        st.markdown(
+                            f"<span style='color:#15803d; font-family:monospace; font-weight:500;'>▸ {table}</span>",
+                            unsafe_allow_html=True,
+                        )
                 except Exception:
                     st.caption("Tablolar okunurken hata oluştu.")
 
             st.markdown("---")
-            if st.button("Sohbeti Sıfırla"):
+            if st.button("🔄 Sohbeti Sıfırla", use_container_width=True):
                 SessionManager.reset_chat()
 
     @staticmethod
     def render_chat_interface(agent_with_chat_history: RunnableWithMessageHistory, db_path: str) -> None:
-        st.title("🤖 SQL Agent: Enterprise Data Interface")
-        st.caption(f"Su anda `{os.path.basename(db_path)}` üzerinde çalışıyorsunuz.")
+        st.markdown(
+            "<h1 style='color:#15803d;'>🤖 AgenticSQL — Veri Asistanı</h1>",
+            unsafe_allow_html=True,
+        )
+        st.caption(f"Aktif veritabanı: `{os.path.basename(db_path)}`")
 
         for message in st.session_state.messages:
             with st.chat_message(message["role"]):
