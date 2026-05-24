@@ -7,6 +7,7 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 
 from managers.agent_manager import AgentManager
 from managers.database_manager import DatabaseManager
+from managers.login_manager import LoginManager
 from managers.session_manager import SessionManager
 from managers.ui_manager import UIManager
 
@@ -15,6 +16,11 @@ load_dotenv()
 
 def main() -> None:
     AgentManager.setup_page()
+
+    if not LoginManager.is_authenticated():
+        LoginManager.render_login_page()
+        return
+
     SessionManager.ensure_state()
 
     databases = DatabaseManager.get_available_databases()
@@ -38,7 +44,13 @@ def main() -> None:
 
     UIManager.render_chat_interface(agent_with_chat_history, active_db_path)
     st.markdown("---")
-    st.caption("🌿 © 2026 AgenticSQL — Yapay Zeka Destekli SQL Arayüzü")
+
+    col1, col2 = st.columns([6, 1])
+    with col1:
+        st.caption("🌿 © 2026 AgenticSQL — Yapay Zeka Destekli SQL Arayüzü")
+    with col2:
+        if st.button("Çıkış Yap", type="secondary"):
+            LoginManager.logout()
 
 
 get_available_databases = DatabaseManager.get_available_databases
