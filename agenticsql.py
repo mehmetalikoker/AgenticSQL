@@ -1,3 +1,4 @@
+import os
 from typing import Any, Dict, List, Optional
 
 import streamlit as st
@@ -10,6 +11,12 @@ from managers.session_manager import SessionManager
 from managers.ui_manager import UIManager
 
 load_dotenv()
+
+# Streamlit Cloud: st.secrets varsa ortam değişkenlerine aktar
+if hasattr(st, "secrets"):
+    for key, value in st.secrets.items():
+        if isinstance(value, str):
+            os.environ.setdefault(key, value)
 
 
 def main() -> None:
