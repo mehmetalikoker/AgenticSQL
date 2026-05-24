@@ -2,9 +2,10 @@ import os
 from typing import Any, Optional, Tuple
 
 import streamlit as st
-from langchain_community.agent_toolkits import create_sql_agent
+from langchain_community.agent_toolkits import SQLDatabaseToolkit
 from langchain_community.utilities import SQLDatabase
 from langchain_anthropic import ChatAnthropic
+from langgraph.prebuilt import create_react_agent
 
 
 class AgentManager:
@@ -133,19 +134,24 @@ Sonuçları her zaman kullanıcı dostu bir Türkçe ile açıkla.
 
     @staticmethod
     @st.cache_resource
-    def init_agent(db_path: str, model_name: str = MODEL_NAME) -> Tuple[Optional[Any], Optional[SQLDatabase]]:
-        if not os.path.exists(db_path):
+    def init_agent(db_uri: str, model_name: str = MODEL_NAME) -> Tuple[Optional[Any], Optional[SQLDatabase]]:
+        if not db_uri:
             return None, None
 
-        db_engine = SQLDatabase.from_uri(f"sqlite:///{db_path}")
-        llm = ChatAnthropic(model=model_name)
+        try:
+            db_engine = SQLDatabase.from_uri(db_uri)
+            llm = ChatAnthropic(model=model_name)
 
-        agent_executor = create_sql_agent(
-            llm,
-            db=db_engine,
-            agent_type="tool-calling",
-            verbose=True,
-            suffix=AgentManager.CUSTOM_AGENT_SUFFIX,
-        )
+            toolkit = SQLDatabaseToolkit(db=db_engine, llm=llm)
+            tools = toolkit.get_tools()
 
-        return agent_executor, db_engine
+            # create_react_agent from LangGraph does not inject an AIMessage
+            # into the prompt, which is required for Claude compatibility.
+            agent = create_react_agent(
+                llm,
+                tools,
+                prompt=AgentManager.CUSTOM_AGENT_SUFFIX,
+            )
+            return agent, db_engine
+        except Exception:
+            return None, None
