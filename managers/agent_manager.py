@@ -11,6 +11,11 @@ class AgentManager:
     PAGE_TITLE = "AgenticSQL"
     PAGE_ICON = "🤖"
     MODEL_NAME = "claude-sonnet-4-6"
+    CLAUDE_MODELS = [
+        "claude-sonnet-4-6",
+        "claude-opus-4-7",
+        "claude-haiku-4-5-20251001",
+    ]
     CUSTOM_AGENT_SUFFIX = """
 Her zaman sorgu yazmadan önce veritabanı şemasını dikkatlice incele.
 Eğer soruyla ilgili yeterli bilgi yoksa, varsayımda bulunma, kullanıcıya sor.
@@ -128,12 +133,12 @@ Sonuçları her zaman kullanıcı dostu bir Türkçe ile açıkla.
 
     @staticmethod
     @st.cache_resource
-    def init_agent(db_path: str) -> Tuple[Optional[Any], Optional[SQLDatabase]]:
+    def init_agent(db_path: str, model_name: str = MODEL_NAME) -> Tuple[Optional[Any], Optional[SQLDatabase]]:
         if not os.path.exists(db_path):
             return None, None
 
         db_engine = SQLDatabase.from_uri(f"sqlite:///{db_path}")
-        llm = ChatAnthropic(model=AgentManager.MODEL_NAME)
+        llm = ChatAnthropic(model=model_name)
 
         agent_executor = create_sql_agent(
             llm,

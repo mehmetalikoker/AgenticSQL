@@ -19,7 +19,9 @@ def main() -> None:
 
     databases = DatabaseManager.get_available_databases()
     active_db_path = UIManager.render_sidebar(databases)
-    agent_executor, db_engine = AgentManager.init_agent(active_db_path)
+
+    selected_model = st.session_state.get("selected_model", AgentManager.MODEL_NAME)
+    agent_executor, db_engine = AgentManager.init_agent(active_db_path, selected_model)
 
     UIManager.render_status_panel(active_db_path, db_engine)
 

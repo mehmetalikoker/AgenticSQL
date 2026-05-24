@@ -1,10 +1,11 @@
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 import streamlit as st
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_community.utilities import SQLDatabase
 
+from managers.agent_manager import AgentManager
 from managers.database_manager import DatabaseManager
 from managers.session_manager import SessionManager
 
@@ -33,13 +34,22 @@ class UIManager:
             return selected_path
 
     @staticmethod
-    def render_status_panel(db_path: str, db_engine: Optional[SQLDatabase]) -> None:
+    def render_status_panel(db_path: str, db_engine: Optional[SQLDatabase]) -> str:
         with st.sidebar:
             st.markdown("#### 📊 Sistem Durumu")
             if db_engine is not None:
                 st.success("Aktif")
             else:
                 st.error("Pasif")
+
+            selected_model = st.selectbox(
+                "Model Seçin",
+                options=AgentManager.CLAUDE_MODELS,
+                index=AgentManager.CLAUDE_MODELS.index(AgentManager.MODEL_NAME),
+            )
+            if st.session_state.get("selected_model") != selected_model:
+                st.session_state.selected_model = selected_model
+                SessionManager.reset_chat()
             st.markdown("#### 🗂️ Tablolar")
 
             if db_engine is None:
@@ -58,6 +68,8 @@ class UIManager:
             st.markdown("---")
             if st.button("🔄 Sohbeti Sıfırla", use_container_width=True):
                 SessionManager.reset_chat()
+
+        return selected_model
 
     @staticmethod
     def render_chat_interface(agent_with_chat_history: RunnableWithMessageHistory, db_path: str) -> None:
